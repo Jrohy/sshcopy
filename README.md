@@ -8,12 +8,11 @@
 ### 1. 命令行参数
 ```bash
 ./sshcopy -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help]
-    -ip: 不传则脚本进入交互输入模式, 等于什么参数都没传; -user: 不传则默认所有ip user为root; -port: 不传则默认所有ip port为22; -pass: 此选项仅供被其他脚本调用时传参, 手动运行脚本时建议不传, 脚本会提示输入密码
     -h, --help           查看帮助
-    -ip                  server ip, 多个ip空格隔开, 例如: -ip "192.168.37.193 192.168.37.100"
-    -user                server user, 多个user空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -user "user1 user2"
-    -port                server port, 多个port空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -port "port1 port2"
-    -pass                server password, 多个password空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -pass "pass1 pass2"
+    -ip                  server ip, 多个ip空格隔开, 例如: -ip "192.168.37.193 192.168.37.100", 不传则脚本进入交互输入模式(等于什么参数都没传)
+    -user                server user, 多个user空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -user "user1 user2", 不传则默认所有ip user为root
+    -port                server port, 多个port空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -port "port1 port2", 不传则默认所有ip port为22
+    -pass                server password, 多个password空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -pass "pass1 pass2", 不传则脚本会提示输入服务器密码
 ```
 
 ### 2. 交互输入模式
