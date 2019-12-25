@@ -10,10 +10,10 @@
 ./sshcopy -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help]
 所有参数支持多个参数传参, 空格隔开, 例如 -ip "ip1 ip2" -port "port1 port2"
     -h, --help           查看帮助
-    -ip                  server ip, 不传则脚本进入交互输入模式(等于什么参数都没传)
-    -user                server user, 多个user时和ip按顺序匹配, user数量不足用最后一个来匹配, 不传则默认所有ip user为root
-    -port                server port, 多个port时和ip按顺序匹配, port数量不足用最后一个来匹配, 不传则默认所有ip port为22
-    -pass                server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个来匹配, 不传则脚本会提示输入服务器密码
+    -ip                  server ip, 不传脚本进入交互输入模式
+    -user                server user, 多个user时和ip按顺序匹配, user数量不足用最后一个, 不传默认所有ip user为root
+    -port                server port, 多个port时和ip按顺序匹配, port数量不足用最后一个, 不传默认所有ip port为22
+    -pass                server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个, 不传脚本会提示输入服务器密码
 ```
 
 ### 2. 交互输入模式
