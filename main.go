@@ -22,16 +22,17 @@ var (
 
 func usage() {
 	fmt.Println("Usage: " + os.Args[0] + " -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help]")
+	fmt.Println(`       所有参数支持多个参数传参, 空格隔开, 例如 -ip "ip1 ip2" -port "port1 port2"`)
 	flag.PrintDefaults()
 	os.Exit(0)
 }
 
 func init() {
 	logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
-	flag.StringVar(&ipStr, "ip", "", `server ip, 多个ip空格隔开, 例如: -ip "192.168.37.193 192.168.37.100", 不传则脚本进入交互输入模式(等于什么参数都没传)`)
-	flag.StringVar(&userStr, "user", "root", `server user, 多个user空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -user "user1 user2", 不传则默认所有ip user为root`)
-	flag.StringVar(&portStr, "port", "22", `server port, 多个port空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -port "port1 port2", 不传则默认所有ip port为22`)
-	flag.StringVar(&passStr, "pass", "", `server password, 多个password空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -pass "pass1 pass2", 不传脚本会提示输入服务器密码`)
+	flag.StringVar(&ipStr, "ip", "", `server ip, 不传则脚本进入交互输入模式(等于什么参数都没传)`)
+	flag.StringVar(&userStr, "user", "root", `server user, 多个user时和ip按顺序匹配, user数量不足用最后一个来匹配, 不传则默认所有ip user为root`)
+	flag.StringVar(&portStr, "port", "22", `server port, 多个port时和ip按顺序匹配, port数量不足用最后一个来匹配, 不传则默认所有ip port为22`)
+	flag.StringVar(&passStr, "pass", "", `server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个来匹配, 不传则脚本会提示输入服务器密码`)
 	flag.Usage = usage
 }
 
