@@ -4,8 +4,6 @@ GITHUB_TOKEN=""
 
 PROJECT="Jrohy/sshcopy"
 
-SHELL_PATH=$(cd `dirname $0`; pwd)
-
 RELEASE_ID=`curl -H 'Cache-Control: no-cache' -s https://api.github.com/repos/$PROJECT/releases/latest|grep id|awk 'NR==1{print $2}'|sed 's/,//'`
 
 function uploadfile() {
@@ -32,7 +30,7 @@ pushd `pwd` &>/dev/null
 
 go get github.com/mitchellh/gox
 
-gox -os="linux" -output="result/`basename $SHELL_PATH`_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
+gox -os="linux" -output="result/`basename `pwd``_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
 
 cd result
 
