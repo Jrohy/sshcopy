@@ -91,12 +91,12 @@ func (server *Server) copySSHID() {
 	retryCount := 0
 	caser := []expect.Caser{
 		&expect.BCase{R: "password", T: func() (tag expect.Tag, status *expect.Status) {
-			if retryCount > 0 {
-				fmt.Println("")
-				logger.Printf("%s, please try again\n", color.RedString("Permission denied"))
-			}
 			password := server.pass
 			if password == "" {
+				if retryCount > 0 {
+					fmt.Println("")
+					logger.Printf("%s, please try again\n", color.RedString("Permission denied"))
+				}
 				tempPass, _ := gopass.GetPasswdPrompt(fmt.Sprintf("请输入'ssh-copy-id %s@%s -p %s'的密码: ", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port))), true, os.Stdin, os.Stdout)
 				password = string(tempPass)
 			}
@@ -110,6 +110,10 @@ func (server *Server) copySSHID() {
 	for {
 		if retryCount == 4 {
 			logger.Println("已经达到3次输错密码! 请重新运行脚本进行免密操作")
+			break
+		}
+		if server.pass != "" && retryCount > 1 {
+			logger.Println(fmt.Sprintf("'ssh-copy-id %s@%s -p %s': %s", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port)), color.RedString("Permission denied")))
 			break
 		}
 		if output, _, _, err := e.ExpectSwitchCase(caser, timeout); err != nil {

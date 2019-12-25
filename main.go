@@ -115,7 +115,11 @@ func main() {
 			if isConnect {
 				logger.Printf("%s服务器已经设置为免密!\n", color.MagentaString(server.ip))
 			} else {
-				serverSlice = append(serverSlice, server)
+				if pass != "" {
+					server.copySSHID()
+				} else {
+					serverSlice = append(serverSlice, server)
+				}
 			}
 		}(ip, filterValue(ipIndex, totalSize, userSlice), filterValue(ipIndex, totalSize, portSlice), filterValue(ipIndex, totalSize, passSlice))
 	}
