@@ -2,13 +2,17 @@
 
 GITHUB_TOKEN=""
 
-RELEASE_ID=`curl -H 'Cache-Control: no-cache' -s https://api.github.com/repos/Jrohy/sshcopy/releases/latest|grep id|awk 'NR==1{print $2}'|sed 's/,//'`
+PROJECT="Jrohy/sshcopy"
+
+SHELL_PATH=$(cd `dirname $0`; pwd)
+
+RELEASE_ID=`curl -H 'Cache-Control: no-cache' -s https://api.github.com/repos/$PROJECT/releases/latest|grep id|awk 'NR==1{print $2}'|sed 's/,//'`
 
 function uploadfile() {
   FILE=$1
   CTYPE=$(file -b --mime-type $FILE)
 
-  curl -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: ${CTYPE}" --data-binary @$FILE "https://uploads.github.com/repos/Jrohy/sshcopy/releases/${RELEASE_ID}/assets?name=$(basename $FILE)"
+  curl -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: ${CTYPE}" --data-binary @$FILE "https://uploads.github.com/repos/$PROJECT/releases/${RELEASE_ID}/assets?name=$(basename $FILE)"
 
   echo ""
 }
@@ -28,7 +32,7 @@ pushd `pwd` &>/dev/null
 
 go get github.com/mitchellh/gox
 
-gox -output="result/sshcopy_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
+gox -os="linux" -output="result/`basename $SHELL_PATH`_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
 
 cd result
 
