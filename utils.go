@@ -9,17 +9,18 @@ import (
 	"time"
 )
 
-//耗时统计函数, 传普通字符串
-func TimeCost(start time.Time, str string)  {
+// TimeCost 耗时统计函数, 传普通字符串
+func TimeCost(start time.Time, str string) {
 	logger.Printf("%s  耗时: %v\n", str, time.Since(start))
 }
 
-//耗时统计函数, 传指向指针的指针
-func TimeCostPTR(start time.Time, strPtr **string)  {
+// TimeCostPTR 耗时统计函数, 传指向指针的指针
+func TimeCostPTR(start time.Time, strPtr **string) {
 	logger.Printf("%s  耗时: %v\n", **strPtr, time.Since(start))
 }
 
-func CheckIp(ip string) bool {
+// CheckIP 检测ipv4地址的合法性
+func CheckIP(ip string) bool {
 	isOk, err := regexp.Match(`^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`, []byte(ip))
 	if err != nil {
 		logger.Fatalf("error: %v", err)
@@ -27,8 +28,9 @@ func CheckIp(ip string) bool {
 	return isOk
 }
 
+// IsExists 检测指定路径文件或者文件夹是否存在
 func IsExists(path string) bool {
-	_, err := os.Stat(path)    //os.Stat获取文件信息
+	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err != nil {
 		if os.IsExist(err) {
 			return true
@@ -38,11 +40,12 @@ func IsExists(path string) bool {
 	return true
 }
 
+// GenerateRsa 自动生成当前用户的密钥
 func GenerateRsa() {
 	var timeout = 10 * time.Minute
 	rsaPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
 	rsaPubPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub")
-	if ! IsExists(rsaPath) || ! IsExists(rsaPubPath) {
+	if !IsExists(rsaPath) || !IsExists(rsaPubPath) {
 		defer TimeCost(time.Now(), "生成密钥")
 		e, _, err := expect.Spawn("ssh-keygen", timeout)
 		if err != nil {

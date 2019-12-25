@@ -13,11 +13,11 @@ import (
 )
 
 var (
-    wg sync.WaitGroup
-    logger *log.Logger
-    ipStr, passStr      string
-    portStr          = "22"
-    userStr          = "root"
+	wg             sync.WaitGroup
+	logger         *log.Logger
+	ipStr, passStr string
+	portStr        = "22"
+	userStr        = "root"
 )
 
 func usage() {
@@ -29,7 +29,7 @@ func usage() {
 }
 
 func init() {
-	logger = log.New(os.Stdout,"", log.Ldate|log.Lmicroseconds)
+	logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 	flag.StringVar(&ipStr, "ip", "", `server ip, 多个ip空格隔开, 例如: -ip "192.168.37.193 192.168.37.100"`)
 	flag.StringVar(&userStr, "user", "root", `server user, 多个user空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -user "user1 user2"`)
 	flag.StringVar(&portStr, "port", "22", `server port, 多个port空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个, 例如: -port "port1 port2"`)
@@ -49,7 +49,6 @@ func obtainParameter() {
 		if strings.Replace(temp, "\n", "", -1) != "" {
 			portStr = temp
 		}
-		temp = ""
 		fmt.Printf("默认连接用户: %s, 正确直接回车, 否则输入自定义用户(多个用户空格隔开, 和ip按顺序匹配, 匹配数不足用最后一个): \n", color.CyanString("root"))
 		temp, _ = inputReader.ReadString('\n')
 		if strings.Replace(temp, "\n", "", -1) != "" {
@@ -58,13 +57,13 @@ func obtainParameter() {
 	}
 }
 
-func verifyIp(inputSlice []string) []string {
-	result := make([]string, 0,  len(inputSlice))
+func verifyIP(inputSlice []string) []string {
+	result := make([]string, 0, len(inputSlice))
 	for _, ip := range inputSlice {
 		if len(ip) == 0 {
 			continue
 		}
-		if ! CheckIp(ip) {
+		if !CheckIP(ip) {
 			logger.Printf("%s不是常规ip, 直接跳过\n", color.YellowString(ip))
 			continue
 		}
@@ -80,7 +79,7 @@ func filterValue(index int, totalSize int, key []string) string {
 	} else {
 		if index < len(key) {
 			result = key[index]
-		}  else {
+		} else {
 			result = key[len(key)-1]
 		}
 	}
@@ -95,14 +94,14 @@ func main() {
 		logger.Fatal("必须输入要免密的服务器ip!")
 	}
 	var serverSlice []Server
-	ipSlice := strings.Split(strings.Join(strings.Fields(ipStr)," "), " ")
-	userSlice := strings.Split(strings.Join(strings.Fields(userStr)," "), " ")
-	portSlice := strings.Split(strings.Join(strings.Fields(portStr)," "), " ")
-	passSlice := strings.Split(strings.Join(strings.Fields(passStr)," "), " ")
-	qualifiedIp := verifyIp(ipSlice)
-	totalSize := len(qualifiedIp)
+	ipSlice := strings.Split(strings.Join(strings.Fields(ipStr), " "), " ")
+	userSlice := strings.Split(strings.Join(strings.Fields(userStr), " "), " ")
+	portSlice := strings.Split(strings.Join(strings.Fields(portStr), " "), " ")
+	passSlice := strings.Split(strings.Join(strings.Fields(passStr), " "), " ")
+	qualifiedIP := verifyIP(ipSlice)
+	totalSize := len(qualifiedIP)
 
-	for ipIndex, ip := range qualifiedIp {
+	for ipIndex, ip := range qualifiedIP {
 		wg.Add(1)
 
 		go func(ip string, user string, port string, pass string) {
@@ -124,6 +123,6 @@ func main() {
 	wg.Wait()
 
 	for _, s := range serverSlice {
-		s.copySShId()
+		s.copySSHID()
 	}
 }

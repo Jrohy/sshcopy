@@ -8,27 +8,26 @@ import (
 )
 
 var (
-	rsaPath = filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
+	rsaPath    = filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
 	rsaPubPath = filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub")
 )
 
 func TestCheckIp(t *testing.T) {
 	testMap := map[string]bool{
 		"192.168.37.163": true,
-		"192.2.256.3": false,
-		"192.168": false,
-		"192.168.6o.23": false,
-		"192.168.6.2O": false,
-		"192.I68.6o.23": false,
-		"192.68。6.23": false,
+		"192.2.256.3":    false,
+		"192.168":        false,
+		"192.168.6o.23":  false,
+		"192.168.6.2O":   false,
+		"192.I68.6o.23":  false,
+		"192.68。6.23":    false,
 	}
 	for k, v := range testMap {
-		if CheckIp(k) != v {
+		if CheckIP(k) != v {
 			t.Errorf("当ip为%s时checkIp函数无法通过", k)
 		}
 	}
 }
-
 
 // 测试id_rsa和id_rsa.pub都不存在的情况
 func TestGenerateRsaAll(t *testing.T) {
@@ -39,7 +38,7 @@ func TestGenerateRsaAll(t *testing.T) {
 		os.Remove(rsaPubPath)
 	}
 	GenerateRsa()
-	if ! IsExists(rsaPubPath) || ! IsExists(rsaPath) {
+	if !IsExists(rsaPubPath) || !IsExists(rsaPath) {
 		t.Error("id_rsa和id_rsa.pub同时不存在时生成密钥失败!")
 	}
 }
@@ -64,7 +63,7 @@ func TestGenerateRsaPrivate(t *testing.T) {
 	} else {
 		newTime = fileInfo.ModTime()
 	}
-	if ! IsExists(rsaPath) || oldTime == newTime {
+	if !IsExists(rsaPath) || oldTime == newTime {
 		t.Error("id_rsa不存在时生成密钥失败!")
 	}
 }
@@ -89,13 +88,13 @@ func TestGenerateRsaPublic(t *testing.T) {
 	} else {
 		newTime = fileInfo.ModTime()
 	}
-	if ! IsExists(rsaPubPath) || oldTime == newTime {
+	if !IsExists(rsaPubPath) || oldTime == newTime {
 		t.Error("id_rsa.pub不存在时生成密钥失败!")
 	}
 }
 
 func TestIsExists(t *testing.T) {
-	if ! IsExists("utils.go") {
+	if !IsExists("utils.go") {
 		t.Error("测试isExits函数失败!")
 	}
 }

@@ -22,14 +22,15 @@ var (
 	timeout = 10 * time.Minute
 )
 
+// Server 结构体
 type Server struct {
-	ip    string
-	port  int
-	user  string
-	pass  string
+	ip   string
+	port int
+	user string
+	pass string
 }
 
-func (server *Server)sshTest() bool {
+func (server *Server) sshTest() bool {
 	connect := true
 	var timeCostPoint *string
 	ptr := &timeCostPoint
@@ -77,7 +78,7 @@ func (server *Server)sshTest() bool {
 	return connect
 }
 
-func (server *Server)copySShId() {
+func (server *Server) copySSHID() {
 	defer TimeCost(time.Now(), "ssh copy-id")
 	// 调试用
 	//e, _, err := expect.SpawnWithArgs([]string{"ssh-copy-id", fmt.Sprintf("%s@%s", server.user, server.ip), "-p", strconv.Itoa(server.port)}, timeout, expect.Verbose(true), expect.DebugCheck(log.New(os.Stdout,"Info:",log.Ldate | log.Ltime | log.Lshortfile)))
@@ -96,7 +97,7 @@ func (server *Server)copySShId() {
 			}
 			password := server.pass
 			if password == "" {
-				tempPass, _  := gopass.GetPasswdPrompt(fmt.Sprintf("请输入'ssh-copy-id %s@%s -p %s'的密码: ", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port))), true, os.Stdin, os.Stdout)
+				tempPass, _ := gopass.GetPasswdPrompt(fmt.Sprintf("请输入'ssh-copy-id %s@%s -p %s'的密码: ", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port))), true, os.Stdin, os.Stdout)
 				password = string(tempPass)
 			}
 			_ = e.Send(password + "\n")
