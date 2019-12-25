@@ -30,9 +30,7 @@ pushd `pwd` &>/dev/null
 
 go get github.com/mitchellh/gox
 
-BASE_PATH=`pwd`
-
-gox -os="linux" -output="result/`basename $BASE_PATH`_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
+gox -os="linux" -output="result/`basename $PROJECT`_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
 
 cd result
 
