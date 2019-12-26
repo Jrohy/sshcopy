@@ -32,10 +32,10 @@ func TestCheckIp(t *testing.T) {
 // 测试id_rsa和id_rsa.pub都不存在的情况
 func TestGenerateRsaAll(t *testing.T) {
 	if IsExists(rsaPubPath) {
-		os.Remove(rsaPath)
+		_ = os.Remove(rsaPath)
 	}
 	if IsExists(rsaPubPath) {
-		os.Remove(rsaPubPath)
+		_ = os.Remove(rsaPubPath)
 	}
 	GenerateRsa()
 	if !IsExists(rsaPubPath) || !IsExists(rsaPath) {
@@ -47,7 +47,7 @@ func TestGenerateRsaAll(t *testing.T) {
 func TestGenerateRsaPrivate(t *testing.T) {
 	var oldTime, newTime time.Time
 	if IsExists(rsaPath) {
-		os.Remove(rsaPath)
+		_ = os.Remove(rsaPath)
 	}
 	if IsExists(rsaPubPath) {
 		if fileInfo, err := os.Stat(rsaPubPath); err != nil {
@@ -72,7 +72,7 @@ func TestGenerateRsaPrivate(t *testing.T) {
 func TestGenerateRsaPublic(t *testing.T) {
 	var oldTime, newTime time.Time
 	if IsExists(rsaPubPath) {
-		os.Remove(rsaPubPath)
+		_ = os.Remove(rsaPubPath)
 	}
 	if IsExists(rsaPath) {
 		if fileInfo, err := os.Stat(rsaPath); err != nil {
