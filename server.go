@@ -46,7 +46,16 @@ func (server *Server) sshTest() bool {
 		logger.Fatalf("unable to parse private key: %v", err)
 	}
 
-	hostKeyCallback, err := kh.New(filepath.Join(os.Getenv("HOME"), ".ssh", "known_hosts"))
+	knowHostsPath := filepath.Join(os.Getenv("HOME"), ".ssh", "known_hosts")
+	if !IsExists(knowHostsPath) {
+		knowHostsFile, err := os.Create(knowHostsPath)
+		if err != nil {
+			logger.Fatal(err)
+		}
+		defer knowHostsFile.Close()
+	}
+
+	hostKeyCallback, err := kh.New(knowHostsPath)
 	if err != nil {
 		logger.Fatal("could not create hostkeycallback function: ", err)
 	}
