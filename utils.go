@@ -62,12 +62,12 @@ func GenerateRsa() {
 		for {
 			output, _, _, err := e.ExpectSwitchCase(caser, timeout)
 
+			if strings.Contains(output, "fingerprint") {
+				break
+			}
 			if err != nil {
 				e, _, err = expect.Spawn("ssh-keygen", timeout)
 				continue
-			}
-			if strings.Contains(output, "fingerprint") {
-				break
 			}
 		}
 	}
