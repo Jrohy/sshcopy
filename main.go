@@ -18,10 +18,15 @@ var (
 	ipStr, passStr string
 	portStr        = "22"
 	userStr        = "root"
+	Version        string
+	BuildDate      string
+	GoVersion      string
+	GitVersion     string
+	showVersion    bool
 )
 
 func usage() {
-	fmt.Println("Usage: " + os.Args[0] + " -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help]")
+	fmt.Println("Usage: " + os.Args[0] + " -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help] [-v]")
 	fmt.Println(`       所有参数支持多个参数传参, 空格隔开, 例如 -ip "ip1 ip2" -port "port1 port2"`)
 	flag.PrintDefaults()
 	os.Exit(0)
@@ -33,11 +38,21 @@ func init() {
 	flag.StringVar(&userStr, "user", "root", `server user, 多个user时和ip按顺序匹配, user数量不足用最后一个, 不传默认所有ip user为root`)
 	flag.StringVar(&portStr, "port", "22", `server port, 多个port时和ip按顺序匹配, port数量不足用最后一个, 不传默认所有ip port为22`)
 	flag.StringVar(&passStr, "pass", "", `server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个, 不传脚本会提示输入服务器密码`)
+	flag.BoolVar(&showVersion, "v", false, "显示版本号")
 	flag.Usage = usage
+	flag.Parse()
+
+	if showVersion {
+		fmt.Println()
+		fmt.Printf("Version: %s\n\n", color.CyanString(Version))
+		fmt.Printf("BuildDate: %s\n\n", color.CyanString(BuildDate))
+		fmt.Printf("GoVersion: %s\n\n", color.CyanString(GoVersion))
+		fmt.Printf("GitVersion: %s\n\n", color.CyanString(GitVersion))
+		os.Exit(0)
+	}
 }
 
 func obtainParameter() {
-	flag.Parse()
 	if ipStr == "" {
 		inputReader := bufio.NewReader(os.Stdin)
 		fmt.Println("请输入要进行免密的服务器ip, 多个ip空格隔开: ")
@@ -87,7 +102,7 @@ func filterValue(index int, totalSize int, key []string) string {
 
 func main() {
 	obtainParameter()
-	GenerateRsa()
+	GenerateId()
 
 	if ipStr == "" {
 		logger.Fatal("必须输入要免密的服务器ip!")

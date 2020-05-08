@@ -35,7 +35,11 @@ func (server *Server) sshTest() bool {
 	var timeCostPoint *string
 	ptr := &timeCostPoint
 	defer TimeCostPTR(time.Now(), ptr)
-	key, err := ioutil.ReadFile(filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa"))
+	idPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_ed25519")
+	if !IsExists(idPath) {
+		idPath = filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
+	}
+	key, err := ioutil.ReadFile(idPath)
 	if err != nil {
 		logger.Fatalf("unable to read private key: %v", err)
 	}

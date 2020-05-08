@@ -40,34 +40,38 @@ func IsExists(path string) bool {
 	return true
 }
 
-// GenerateRsa 自动生成当前用户的密钥
-func GenerateRsa() {
+// GenerateId 自动生成当前用户的密钥
+func GenerateId() {
 	var timeout = 10 * time.Minute
 	rsaPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
 	rsaPubPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub")
+	edPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_ed25519")
+	edPubPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_ed25519.pub")
 	if !IsExists(rsaPath) || !IsExists(rsaPubPath) {
-		defer TimeCost(time.Now(), "生成密钥")
-		e, _, err := expect.Spawn("ssh-keygen", timeout)
-		if err != nil {
-			logger.Fatal(err)
-		}
-		defer e.Close()
-
-		caser := []expect.Caser{
-			&expect.BCase{R: "Enter", S: "\n"},
-			&expect.BCase{R: "y/n", S: "y\n"},
-			&expect.BCase{R: "fingerprint", S: "\n"},
-		}
-
-		for {
-			output, _, _, err := e.ExpectSwitchCase(caser, timeout)
-
-			if strings.Contains(output, "fingerprint") {
-				break
-			}
+		if !IsExists(edPath) || !IsExists(edPubPath) {
+			defer TimeCost(time.Now(), "生成密钥")
+			e, _, err := expect.Spawn("ssh-keygen -t ed25519", timeout)
 			if err != nil {
-				e, _, err = expect.Spawn("ssh-keygen", timeout)
-				continue
+				logger.Fatal(err)
+			}
+			defer e.Close()
+
+			caser := []expect.Caser{
+				&expect.BCase{R: "Enter", S: "\n"},
+				&expect.BCase{R: "y/n", S: "y\n"},
+				&expect.BCase{R: "fingerprint", S: "\n"},
+			}
+
+			for {
+				output, _, _, err := e.ExpectSwitchCase(caser, timeout)
+
+				if strings.Contains(output, "fingerprint") {
+					break
+				}
+				if err != nil {
+					e, _, err = expect.Spawn("ssh-keygen", timeout)
+					continue
+				}
 			}
 		}
 	}

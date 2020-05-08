@@ -26,11 +26,9 @@ function upload() {
   uploadfile $DGST
 }
 
-pushd `pwd` &>/dev/null
-
-go get github.com/mitchellh/gox
-
-gox -os="linux" -output="result/`basename $PROJECT`_{{.OS}}_{{.Arch}}" -ldflags="-s -w" ..
+if [[ ! -e result ]];then
+    bash build.sh
+fi
 
 cd result
 
@@ -44,6 +42,6 @@ done
 echo ""
 echo "upload completed!"
 
-popd &>/dev/null
+cd ..
 
 rm -rf result
