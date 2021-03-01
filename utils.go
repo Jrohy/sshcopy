@@ -42,7 +42,10 @@ func IsExists(path string) bool {
 
 // GenerateId 自动生成当前用户的密钥
 func GenerateId() {
-	var timeout = 10 * time.Minute
+	var (
+		timeout = 10 * time.Minute
+		command = "ssh-keygen -t ed25519"
+	)
 	rsaPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
 	rsaPubPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub")
 	edPath := filepath.Join(os.Getenv("HOME"), ".ssh", "id_ed25519")
@@ -50,7 +53,7 @@ func GenerateId() {
 	if !IsExists(rsaPath) || !IsExists(rsaPubPath) {
 		if !IsExists(edPath) || !IsExists(edPubPath) {
 			defer TimeCost(time.Now(), "生成密钥")
-			e, _, err := expect.Spawn("ssh-keygen -t ed25519", timeout)
+			e, _, err := expect.Spawn(command, timeout)
 			if err != nil {
 				logger.Fatal(err)
 			}
@@ -69,7 +72,7 @@ func GenerateId() {
 					break
 				}
 				if err != nil {
-					e, _, err = expect.Spawn("ssh-keygen", timeout)
+					e, _, _ = expect.Spawn(command, timeout)
 					continue
 				}
 			}

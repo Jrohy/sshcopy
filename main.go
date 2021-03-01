@@ -18,11 +18,16 @@ var (
 	ipStr, passStr string
 	portStr        = "22"
 	userStr        = "root"
-	Version        string
-	BuildDate      string
-	GoVersion      string
-	GitVersion     string
-	showVersion    bool
+
+	// Version 程序版本号
+	Version string
+	// BuildDate 编译时间
+	BuildDate string
+	// GoVersion go版本
+	GoVersion string
+	// GitVersion git版本
+	GitVersion  string
+	showVersion bool
 )
 
 func usage() {
