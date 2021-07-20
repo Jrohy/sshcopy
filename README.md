@@ -7,9 +7,10 @@
 ## 运行方式
 ### 1. 命令行参数
 ```bash
-./sshcopy -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help]
+./sshcopy -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help] [-s]
 所有参数支持多个参数传参, 空格隔开, 例如 -ip "ip1 ip2" -port "port1 port2"
     -h, --help           查看帮助
+    -s                   开启极简模式, 只显示必要的日志
     -ip                  server ip, 不传脚本进入交互输入模式
     -user                server user, 多个user时和ip按顺序匹配, user数量不足用最后一个, 不传默认所有ip user为root
     -port                server port, 多个port时和ip按顺序匹配, port数量不足用最后一个, 不传默认所有ip port为22

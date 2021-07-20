@@ -144,7 +144,7 @@ func (server *Server) copySSHID() {
 				e, _, _ = expect.Spawn(fmt.Sprintf("ssh-copy-id %s@%s -p %d", server.user, server.ip, server.port), timeout)
 				continue
 			}
-			if !Slient {
+			if !Simple {
 				logger.Printf("\n" + output)
 			}
 			if strings.Contains(output, "added") {

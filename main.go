@@ -18,8 +18,8 @@ var (
 	ipStr, passStr string
 	portStr        = "22"
 	userStr        = "root"
-	// Slient 安静模式
-	Slient = false
+	// Simple 极简模式
+	Simple = false
 	// Version 程序版本号
 	Version string
 	// BuildDate 编译时间
@@ -44,7 +44,7 @@ func init() {
 	flag.StringVar(&portStr, "port", "22", `server port, 多个port时和ip按顺序匹配, port数量不足用最后一个, 不传默认所有ip port为22`)
 	flag.StringVar(&passStr, "pass", "", `server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个, 不传脚本会提示输入服务器密码`)
 	flag.BoolVar(&showVersion, "v", false, "显示版本号")
-	flag.BoolVar(&Slient, "s", false, "开启安静模式, 只显示必要的日志")
+	flag.BoolVar(&Simple, "s", false, "开启极简模式, 只显示必要的日志")
 	flag.Usage = usage
 	flag.Parse()
 
@@ -56,7 +56,7 @@ func init() {
 		fmt.Printf("GitVersion: %s\n\n", color.CyanString(GitVersion))
 		os.Exit(0)
 	}
-	if Slient {
+	if Simple {
 		logger = log.New(os.Stdout, "", 0)
 	} else {
 		logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
@@ -139,7 +139,7 @@ func main() {
 			server := Server{ip: ip, port: portInt, user: user, pass: pass}
 			isConnect := server.sshTest()
 			if isConnect {
-				if !Slient {
+				if !Simple {
 					logger.Printf("%s服务器已经设置为免密!\n", color.MagentaString(server.ip))
 				}
 			} else {
