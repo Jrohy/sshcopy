@@ -11,12 +11,16 @@ import (
 
 // TimeCost 耗时统计函数, 传普通字符串
 func TimeCost(start time.Time, str string) {
-	logger.Printf("%s  耗时: %v\n", str, time.Since(start))
+	if !Slient {
+		logger.Printf("%s  耗时: %v\n", str, time.Since(start))
+	}
 }
 
 // TimeCostPTR 耗时统计函数, 传指向指针的指针
 func TimeCostPTR(start time.Time, strPtr **string) {
-	logger.Printf("%s  耗时: %v\n", **strPtr, time.Since(start))
+	if !Slient {
+		logger.Printf("%s  耗时: %v\n", **strPtr, time.Since(start))
+	}
 }
 
 // CheckIP 检测ipv4地址的合法性

@@ -18,7 +18,8 @@ var (
 	ipStr, passStr string
 	portStr        = "22"
 	userStr        = "root"
-
+	// Slient 安静模式
+	Slient = false
 	// Version 程序版本号
 	Version string
 	// BuildDate 编译时间
@@ -31,19 +32,19 @@ var (
 )
 
 func usage() {
-	fmt.Println("Usage: " + os.Args[0] + " -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help] [-v]")
+	fmt.Println("Usage: " + os.Args[0] + " -ip [ip] -user [user] -port [port] -pass [pass] [-h|--help] [-v] [-s]")
 	fmt.Println(`       所有参数支持多个参数传参, 空格隔开, 例如 -ip "ip1 ip2" -port "port1 port2"`)
 	flag.PrintDefaults()
 	os.Exit(0)
 }
 
 func init() {
-	logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 	flag.StringVar(&ipStr, "ip", "", `server ip, 不传脚本进入交互输入模式`)
 	flag.StringVar(&userStr, "user", "root", `server user, 多个user时和ip按顺序匹配, user数量不足用最后一个, 不传默认所有ip user为root`)
 	flag.StringVar(&portStr, "port", "22", `server port, 多个port时和ip按顺序匹配, port数量不足用最后一个, 不传默认所有ip port为22`)
 	flag.StringVar(&passStr, "pass", "", `server password, 多个password时和ip按顺序匹配, pass数量不足用最后一个, 不传脚本会提示输入服务器密码`)
 	flag.BoolVar(&showVersion, "v", false, "显示版本号")
+	flag.BoolVar(&Slient, "s", false, "开启安静模式, 只显示必要的日志")
 	flag.Usage = usage
 	flag.Parse()
 
@@ -54,6 +55,11 @@ func init() {
 		fmt.Printf("GoVersion: %s\n\n", color.CyanString(GoVersion))
 		fmt.Printf("GitVersion: %s\n\n", color.CyanString(GitVersion))
 		os.Exit(0)
+	}
+	if Slient {
+		logger = log.New(os.Stdout, "", 0)
+	} else {
+		logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 	}
 }
 
@@ -133,7 +139,9 @@ func main() {
 			server := Server{ip: ip, port: portInt, user: user, pass: pass}
 			isConnect := server.sshTest()
 			if isConnect {
-				logger.Printf("%s服务器已经设置为免密!\n", color.MagentaString(server.ip))
+				if !Slient {
+					logger.Printf("%s服务器已经设置为免密!\n", color.MagentaString(server.ip))
+				}
 			} else {
 				if pass != "" {
 					server.copySSHID()

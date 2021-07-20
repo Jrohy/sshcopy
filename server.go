@@ -101,32 +101,38 @@ func (server *Server) copySSHID() {
 	}
 	defer e.Close()
 
-	retryCount := 0
+	var (
+		retryCount = 0
+		exit       = false
+	)
 	caser := []expect.Caser{
 		&expect.BCase{R: "password", T: func() (tag expect.Tag, status *expect.Status) {
 			password := server.pass
-			if password == "" {
-				if retryCount > 0 {
-					fmt.Println("")
-					logger.Printf("%s, please try again\n", color.RedString("Permission denied"))
+			if retryCount == 3 {
+				exit = true
+			} else {
+				if password == "" {
+					if retryCount > 0 {
+						logger.Printf("%s, please try again\n\n", color.RedString("Permission denied"))
+					}
+					tempPass, _ := gopass.GetPasswdPrompt(fmt.Sprintf("请输入'%s@%s -p %s'的密码: ", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port))), true, os.Stdin, os.Stdout)
+					password = string(tempPass)
 				}
-				tempPass, _ := gopass.GetPasswdPrompt(fmt.Sprintf("请输入'ssh-copy-id %s@%s -p %s'的密码: ", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port))), true, os.Stdin, os.Stdout)
-				password = string(tempPass)
+				_ = e.Send(password + "\n")
+				retryCount++
 			}
-			_ = e.Send(password + "\n")
-			retryCount++
 			return expect.OKTag, expect.NewStatus(codes.OK, "")
 		}},
 		&expect.BCase{R: "yes/no", S: "yes\n"},
 	}
 
 	for {
-		if retryCount == 4 {
+		if exit {
 			logger.Println("已经达到3次输错密码! 请重新运行脚本进行免密操作")
 			break
 		}
 		if server.pass != "" && retryCount > 1 {
-			logger.Println(fmt.Sprintf("'ssh-copy-id %s@%s -p %s': %s", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port)), color.RedString("Permission denied")))
+			logger.Println(fmt.Sprintf("'%s@%s -p %s': %s", color.CyanString(server.user), color.CyanString(server.ip), color.CyanString(strconv.Itoa(server.port)), color.RedString("Permission denied")))
 			break
 		}
 		if output, _, _, err := e.ExpectSwitchCase(caser, timeout); err != nil {
@@ -138,7 +144,9 @@ func (server *Server) copySSHID() {
 				e, _, _ = expect.Spawn(fmt.Sprintf("ssh-copy-id %s@%s -p %d", server.user, server.ip, server.port), timeout)
 				continue
 			}
-			logger.Printf("\n" + output)
+			if !Slient {
+				logger.Printf("\n" + output)
+			}
 			if strings.Contains(output, "added") {
 				logger.Println(color.GreenString("成功拷贝密钥!"))
 			} else if strings.Contains(output, "exist") {
