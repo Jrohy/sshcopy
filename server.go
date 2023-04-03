@@ -6,7 +6,6 @@ import (
 	expect "github.com/google/goexpect"
 	"github.com/howeyc/gopass"
 	"google.golang.org/grpc/codes"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -39,7 +38,7 @@ func (server *Server) sshTest() bool {
 	if !IsExists(idPath) {
 		idPath = filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")
 	}
-	key, err := ioutil.ReadFile(idPath)
+	key, err := os.ReadFile(idPath)
 	if err != nil {
 		logger.Fatalf("unable to read private key: %v", err)
 	}
@@ -61,7 +60,7 @@ func (server *Server) sshTest() bool {
 
 	hostKeyCallback, err := kh.New(knowHostsPath)
 	if err != nil {
-		logger.Fatal("could not create hostkeycallback function: ", err)
+		logger.Fatal("could not create hostkey callback function: ", err)
 	}
 
 	config := &ssh.ClientConfig{
